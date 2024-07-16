@@ -2,5 +2,16 @@
 {% load static %}
 
 {% block body %}
+
 <h1>loja</h1>
+
+{% for produto in Produtos %}
+
+<h2>Produto</h2>
+<img src="{{ produto.imagem.url }}" width="300" height="400">
+<P>Nome: {{produto.nome}}</P>
+<P>Nome: {{produto}}</P>
+
+{% endfor %}
+
 {% endblock %}

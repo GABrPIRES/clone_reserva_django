@@ -2,5 +2,14 @@
 {% load static %}
 
 {% block body %}
+
 <h1>Homepage</h1>
+
+{% for banner in banners %}
+
+<a href="/{{ banner.link_destino }}"><img src="{{ banner.imagem.url }}"></a>
+
+{% endfor %}
+
+
 {% endblock %}

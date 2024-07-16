@@ -29,7 +29,7 @@ class Tipo(models.Model):
 
 
 class Produto(models.Model):
-    imagem = models.CharField(max_length=400, null=True, blank=True)
+    imagem = models.ImageField(null=True, blank=True)
     nome = models.CharField(max_length=100, null=True, blank=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     ativo = models.BooleanField(default=True)
@@ -37,6 +37,9 @@ class Produto(models.Model):
         Categoria, null=True, blank=True, on_delete=models.SET_NULL
     )
     tipo = models.ForeignKey(Tipo, null=True, blank=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return f"Nome: {self.nome}, Categoria: {self.categoria}, Tipo:{self.tipo}, Preço: {self.preco}"
 
 
 class ItemEstoque(models.Model):
@@ -78,3 +81,12 @@ class ItensPedido(models.Model):
     )
     quantidade = models.IntegerField(default=0)
     pedido = models.ForeignKey(Pedido, null=True, blank=True, on_delete=models.SET_NULL)
+
+
+class Banner(models.Model):
+    imagem = models.ImageField(null=True, blank=True)
+    link_destino = models.CharField(max_length=400, null=True, blank=True)
+    ativo = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.link_destino)
