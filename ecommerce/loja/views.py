@@ -9,10 +9,18 @@ def homepage(request):
     return render(request, "homepage.html", context)
 
 
-def loja(request):
+def loja(request, nome_categoria=None):
     produtos = Produto.objects.filter(ativo=True)
+    if nome_categoria:
+        produtos = produtos.filter(categoria__nome=nome_categoria)
     context = {"Produtos": produtos}
     return render(request, "loja.html", context)
+
+
+def ver_produto(request, id_produto):
+    produto = Produto.objects.get(id=id_produto)
+    context = {"produto": produto}
+    return render(request, "ver_produto.html", context)
 
 
 def carrinho(request):

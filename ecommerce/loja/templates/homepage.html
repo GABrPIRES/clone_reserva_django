@@ -7,7 +7,9 @@
 
 {% for banner in banners %}
 
-<a href="/{{ banner.link_destino }}"><img src="{{ banner.imagem.url }}"></a>
+<a href="{% url 'loja' %}{{ banner.link_destino }}">
+    <img src="{{ banner.imagem.url }}">
+</a>
 
 {% endfor %}
 

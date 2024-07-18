@@ -8,7 +8,9 @@
 {% for produto in Produtos %}
 
 <h2>Produto</h2>
-<img src="{{ produto.imagem.url }}" width="300" height="400">
+<a href="{% url 'ver_produto' produto.id %}">
+    <img src="{{ produto.imagem.url }}" width="300" height="400">
+</a>
 <P>Nome: {{produto.nome}}</P>
 <P>Nome: {{produto}}</P>
 
