@@ -1,7 +1,10 @@
+{% load static %}
 <nav class="nav-bar">
     <a href="{% url 'homepage' %}" class="icon-reserva">Reserva</a>
     <a href="{% url 'loja' %}" class="nav-links">Loja</a>
     <a href="{% url 'login' %}" class="nav-links">Login</a>
     <a href="{% url 'minha_conta' %}" class="nav-links">Minha conta</a>
     <a href="{% url 'carrinho' %}" class="nav-links">Carrinho</a>
+    <img src="{% static 'images/carrinho.png' %}" width=30 height=30>
+    {{ quantidade_produtos_carrinho}}
 </nav>

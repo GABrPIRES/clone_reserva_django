@@ -13,6 +13,9 @@ class Cliente(models.Model):
         User, null=True, blank=True, on_delete=models.CASCADE
     )
 
+    def __str__(self):
+        return str(self.email)
+
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=100, null=True, blank=True)
@@ -85,6 +88,9 @@ class Pedido(models.Model):
         Endereco, null=True, blank=True, on_delete=models.SET_NULL
     )
 
+    def __str__(self):
+        return f"Cliente: {self.cliente.email} - id_pedido: {self.id} - Finalizado: {self.finalizado}"
+
 
 class ItensPedido(models.Model):
     item_estoque = models.ForeignKey(
@@ -92,6 +98,9 @@ class ItensPedido(models.Model):
     )
     quantidade = models.IntegerField(default=0)
     pedido = models.ForeignKey(Pedido, null=True, blank=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return f"Id pedido: {self.pedido.id} - Produto: {self.item_estoque.produto.nome}, {self.item_estoque.tamanho}, {self.item_estoque.cor.cor}"
 
 
 class Banner(models.Model):

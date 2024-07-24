@@ -23,8 +23,7 @@ def ver_produto(request, id_produto, id_cor=None):
     tamanhos = {}
     nome_cor = None
     if id_cor:
-        cor = Cor.objects.get(id=id_cor)
-        nome_cor = cor.cor
+        nome_cor = Cor.objects.get(id=id_cor)
     produto = Produto.objects.get(id=id_produto)
     itens_estoque = ItemEstoque.objects.filter(produto=produto, quantidade__gt=0)
     if len(itens_estoque) > 0:
@@ -47,7 +46,12 @@ def ver_produto(request, id_produto, id_cor=None):
 
 def adicionar_carrinho(request, id_produto):
     if request.method == "POST" and id_produto:
-        print("enviou formulário", id_produto)
+        dados = request.POST.dict()
+        print(dados)
+        tamanho = dados.get("tamanho")
+        id_cor = dados.get("cor")
+        if not tamanho:
+            return redirect("loja")
         return redirect("carrinho")
     else:
         return redirect("loja")

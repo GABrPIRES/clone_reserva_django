@@ -13,7 +13,7 @@
 <P>Nome: {{produto}}</P>
 
 {% if nome_cor %}
-<p>Cor: {{nome_cor}}</p>
+<p>Cor: {{nome_cor.cor}}</p>
 {% endif %}
 
 {% for cor in cores %}
@@ -30,6 +30,7 @@
     <input type="radio" name="tamanho" value="{{tamanho}}">
     <label for="{{tamanho}}">{{tamanho}}</label>
     {% endfor %}
+    <input type="hidden" name="cor" value="{{nome_cor.id}}">
     <button type="submit">Adicionar ao carrinho</button>
 </form>
 {% endif %}
