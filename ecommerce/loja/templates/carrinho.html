@@ -3,4 +3,34 @@
 
 {% block body %}
 <h1>Carrinho</h1>
+<h4>Número Pedido: {{pedido.id}}</h4>
+Preço Total do Pedido: {{pedido.preco_total}}
+Total Produtos: {{pedido.quantidade_total}}
+
+{%for item in itens_pedido%}
+<p>
+    <img src="{{item.item_estoque.produto.imagem.url}}" width=50 height=70>
+    Produto: {{item.item_estoque.produto.nome}}
+    Cor: {{item.item_estoque.cor.cor}}
+    Tamanho: {{item.item_estoque.tamanho}}
+    <div style="display:flex;">
+    Quantidade: <form method="post" action="{% url 'adicionar_carrinho' item.item_estoque.produto.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="tamanho" value="{{item.item_estoque.tamanho}}">
+        <input type="hidden" name="cor" value="{{item.item_estoque.cor.id}}">
+        <button type="submit">+</button>
+    </form>
+    {{item.quantidade}} 
+    <form method="post" action="{% url 'adicionar_carrinho' item.item_estoque.produto.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="tamanho" value="{{item.item_estoque.tamanho}}">
+        <input type="hidden" name="cor" value="{{item.item_estoque.cor.id}}">
+        <button type="submit">+</button>
+    </form>
+    </div>
+    Preço unitário: {{item.item_estoque.produto.preco}}
+    Preço Total: {{item.preco_total}}
+</P>
+<hr>
+{%endfor%}
 {% endblock %}
