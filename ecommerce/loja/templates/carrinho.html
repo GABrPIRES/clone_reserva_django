@@ -3,6 +3,7 @@
 
 {% block body %}
 <h1>Carrinho</h1>
+{% if cliente_existente %}
 <h4>Número Pedido: {{pedido.id}}</h4>
 Preço Total do Pedido: {{pedido.preco_total}}
 Total Produtos: {{pedido.quantidade_total}}
@@ -14,11 +15,12 @@ Total Produtos: {{pedido.quantidade_total}}
     Cor: {{item.item_estoque.cor.cor}}
     Tamanho: {{item.item_estoque.tamanho}}
     <div style="display:flex;">
-    Quantidade: <form method="post" action="{% url 'adicionar_carrinho' item.item_estoque.produto.id %}">
+    Quantidade: 
+    <form method="post" action="{% url 'remover_carrinho' item.item_estoque.produto.id %}">
         {% csrf_token %}
         <input type="hidden" name="tamanho" value="{{item.item_estoque.tamanho}}">
         <input type="hidden" name="cor" value="{{item.item_estoque.cor.id}}">
-        <button type="submit">+</button>
+        <button type="submit">-</button>
     </form>
     {{item.quantidade}} 
     <form method="post" action="{% url 'adicionar_carrinho' item.item_estoque.produto.id %}">
@@ -33,4 +35,12 @@ Total Produtos: {{pedido.quantidade_total}}
 </P>
 <hr>
 {%endfor%}
+
+<a href="{% url 'checkout' %}">Checkout</a>
+
+{% else %}
+<h3>Seu carrinho está vazio</h3>
+<a href="{% url 'loja' %}">Visite nossa loja</a>
+
+{% endif %}
 {% endblock %}
