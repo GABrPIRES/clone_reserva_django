@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+    <h1>Adicionar Endereço</h1>
+    <a href="{%url "checkout"%}">Retornar para a compra</a>
+    <form method="POST" action="{% url "adicionar_endereco" %}">
+        {% csrf_token %}
+        <input type="text" name="cidade" placeholder="Cidade" >
+        <input type="text" name="estado" placeholder="Estado">
+        <input type="text" name="rua" placeholder="Rua">
+        <input type="number" name="numero" placeholder="Número">
+        <input type="text" name="complemento" placeholder="Complemento">
+        <input type="number" name="cep" placeholder="CEP (apenas número)">
+        <button type="submit">Adicionar endereço</button>
+    </form>
+
+
+{% endblock %}

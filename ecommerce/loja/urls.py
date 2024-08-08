@@ -24,4 +24,5 @@ urlpatterns = [
         remover_carrinho,
         name="remover_carrinho",
     ),
+    path("adicionarendereco/", adicionar_endereco, name="adicionar_endereco"),
 ]
