@@ -7,4 +7,16 @@
     <a href="{% url 'carrinho' %}" class="nav-links">Carrinho</a>
     <img src="{% static 'images/carrinho.png' %}" width=30 height=30>
     {{ quantidade_produtos_carrinho}}
+
+    <div style="display: flex;">
+        {% for categoria in categorias %}
+            <div>
+                <a href="{% url "loja" %}{{ categoria.slug }}">{{categoria.nome}}</a>
+                <br>
+                {% for tipo in tipos %}
+                    <a href="{% url "loja" %}{{ categoria.slug }}-{{ tipo.slug }}">{{tipo.nome}}</a>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
 </nav>
