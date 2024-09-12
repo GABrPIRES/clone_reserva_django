@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import *
 import uuid
-from .utils import filtrar_produtos, preco_minino_maximo
+from .utils import filtrar_produtos, preco_minino_maximo, ordenar_produtos
 from django.db.models import Max, Min
 
 
@@ -36,6 +36,10 @@ def loja(request, filtro=None):
     categorias = Categoria.objects.filter(id__in=ids_categorias)
     tamanhos = itens.values_list("tamanho", flat=True).distinct()
     minimo, maximo = preco_minino_maximo(produtos)
+
+    ordem = request.GET.get("ordem", "menor-preco")
+    produtos = ordenar_produtos(produtos, ordem)
+
     context = {
         "Produtos": produtos,
         "minimo": minimo,
