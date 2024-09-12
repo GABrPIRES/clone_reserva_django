@@ -2,5 +2,21 @@
 {% load static %}
 
 {% block body %}
-<h1>login</h1>
+
+<h1>Faça seu Login</h1>
+
+{% if erro %}
+<h4>Credenciais inválidas, tente novamente ou crie uam conta</h4>
+{% endif %}
+
+<form method="POST" action="{% url 'fazer_login' %}">
+    {% csrf_token %}
+
+    <input type="email" name="email" placeholder="E-mail" >
+    <input type="password" name="senha" placeholder="Senha" >
+    <button type="submit">Entrar</button>
+</form>
+
+<a href="{% url 'criar_conta' %}">Não tem conta? Criar conta</a>
+<a>Esqueci minha senha</a>
 {% endblock %}
