@@ -3,6 +3,48 @@
 
 {% block body %}
 <h1>minha conta</h1>
+<a href="{% url 'meus_pedidos' %}">Meus pedidos</a>
 
 <a href="{% url 'fazer_logout' %}">Sair da Conta</a>
+
+{% if alterado %}
+<p>Alterações salvas com sucesso</P>
+{% endif %}
+
+{% if erro == "senha_incorreta" %}
+<p>Sua senha está incorreta</P>
+{% endif %}
+
+{% if erro == "senhas_diferentes" %}
+<p>Nova senha e confirmação de nova senha não estão iguais</p>
+{% endif %}
+
+{% if erro == "email_existente" %}
+<p>Já existe um usuário com esse e-mail</p>
+{% endif %}
+
+{% if erro == "formulario_invalido" %}
+<p>Formulário inválido, tente novamente</p>
+{% endif %}
+
+<h3>Meus dados</h3>
+<form method="POST" action="{% url 'minha_conta' %}">
+    {% csrf_token %}
+    <input type="text" name="nome" placeholder="Nome Completo" {% if request.user.cliente.nome %}value="{{ request.user.cliente.nome }}"{% endif %}>
+    <input type="email" name="email" placeholder="E-mail" value="{{ request.user.email }}">
+    <input type="number" name="telefone" placeholder="Telefone" value="{{ request.user.cliente.telefone }}">
+    <button type="submit">Salvar</button>
+</form>
+
+<br>
+<hr>
+
+<h3>Alterar senha</h3>
+<form method="POST" action="{% url 'minha_conta' %}">
+    {% csrf_token %}
+    <input type="password" name="senha_atual" placeholder="Senha Atual">
+    <input type="password" name="nova_senha" placeholder="Nova Senha">
+    <input type="password" name="nova_senha_confirmação" placeholder="Confirmar Senha">
+    <button type="submit">Editar senha</button>
+</form>
 {% endblock %}

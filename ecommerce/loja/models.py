@@ -117,6 +117,11 @@ class Pedido(models.Model):
         preco = sum([item.preco_total for item in itens_pedido])
         return preco
 
+    @property
+    def itens(self):
+        itens_pedido = ItensPedido.objects.filter(pedido__id=self.id)
+        return itens_pedido
+
 
 class ItensPedido(models.Model):
     item_estoque = models.ForeignKey(
