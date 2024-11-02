@@ -14,7 +14,7 @@ urlpatterns = [
     path("carrinho/", carrinho, name="carrinho"),
     path("checkout/", checkout, name="checkout"),
     path(
-        "adicionarcarrinho/<int:id_produto>",
+        "adicionarcarrinho/<int:id_produto>/",
         adicionar_carrinho,
         name="adicionar_carrinho",
     ),
@@ -24,6 +24,7 @@ urlpatterns = [
         name="remover_carrinho",
     ),
     path("adicionarendereco/", adicionar_endereco, name="adicionar_endereco"),
+    path("finalizarpedido/<int:id_pedido>/", finalizar_pedido, name="finalizar_pedido"),
     path("minhaconta/", minha_conta, name="minha_conta"),
     path("meuspedidos/", meus_pedidos, name="meus_pedidos"),
     path("fazerlogin/", fazer_login, name="fazer_login"),

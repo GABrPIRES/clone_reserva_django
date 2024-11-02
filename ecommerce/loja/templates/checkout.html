@@ -9,7 +9,23 @@
     Preço Total do Pedido: {{pedido.preco_total}}
     Total Produtos: {{pedido.quantidade_total}}
 
-    <form method="POST" action="">
+    {% if erro %}
+
+        {%if erro == "preco"%}
+            <p>Preco dos produtos errado, tente novamente ou volte para o carrinho.</p>
+        {%endif%}
+
+        {%if erro == "endereco"%}
+            <P>Selecione um endereco de entrega para continuar.<p>
+        {%endif%}
+
+        {%if erro == "email"%}
+            <p>Preencha um e-mail para podermos confirmar a sua compra</p>
+        {%endif%}
+
+    {% endif %}
+
+    <form method="POST" action="{% url 'finalizar_pedido' pedido.id %}">
         {% csrf_token %}
         <h5> Selecione o endereço de entrega</h5>
         <a href="{% url "adicionar_endereco"%}">Adicionar endereço de entrega</a>
