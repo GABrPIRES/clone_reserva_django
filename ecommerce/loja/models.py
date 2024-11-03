@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+# Models > admin > py manage.py makemigrations > py manage.py migrate
+
 
 class Cliente(models.Model):
     nome = models.CharField(max_length=100, null=True, blank=True)
@@ -145,3 +147,9 @@ class Banner(models.Model):
 
     def __str__(self):
         return str(self.link_destino)
+
+
+class Pagamento(models.Model):
+    id_pagamento = models.CharField(max_length=400)
+    pedido = models.ForeignKey(Pedido, null=True, blank=True, on_delete=models.SET_NULL)
+    aprovado = models.BooleanField(default=False)

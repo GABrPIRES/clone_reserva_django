@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from .models import *
 import uuid
 from .utils import filtrar_produtos, preco_minino_maximo, ordenar_produtos
@@ -7,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from datetime import datetime
+from .api_mercadopago import criar_pagamento
 
 
 # Create your views here.
@@ -190,15 +192,18 @@ def checkout(request):
 
 def finalizar_pedido(request, id_pedido):
     if request.method == "POST":
+        erro = None
         dados = request.POST.dict()
         total = dados.get("total")
+        total = float(total.replace(",", "."))
         pedido = Pedido.objects.get(id=id_pedido)
-        if total != pedido.preco_total:
+        if total != float(pedido.preco_total):
             erro = "preco"
         if not "endereco" in dados:
             erro = "endereco"
         else:
-            endereco = dados.get("endereco")
+            id_endereco = dados.get("endereco")
+            endereco = Endereco.objects.get(id=id_endereco)
             pedido.endereco = endereco
 
         if not request.user.is_authenticated:
@@ -224,9 +229,24 @@ def finalizar_pedido(request, id_pedido):
             enderecos = Endereco.objects.filter(cliente=pedido.cliente)
             context = {"erro": erro, "pedido": pedido, "enderecos ": enderecos}
             return render(request, "checkout.html", context)
-        return redirect("checkout", erro)
+        else:
+            itens_pedido = ItensPedido.objects.filter(pedido=pedido)
+            link = request.build_absolute_uri(reverse("finalizar_pagamento"))
+            link_pagamento, id_pagamento = criar_pagamento(itens_pedido, link)
+            pagamento = Pagamento.objects.create(
+                id_pagamento=id_pagamento, pedido=pedido
+            )
+            pagamento.save()
+            return redirect(link_pagamento)
     else:
         return redirect("loja")
+
+
+def finalizar_pagamento(request):
+    # TODO Aula 71 início da aula, abaixo estará o formato do response:
+    # {'collection_id': '91994701447', 'collection_status': 'approved', 'payment_id': '91994701447', 'status': 'approved', 'external_reference': 'null', 'payment_type': 'account_money', 'merchant_order_id': '24598634288', 'preference_id': '2073438676-318e7338-03a8-4ba7-9c09-4b375fa90f3c', 'site_id': 'MLB', 'processing_mode': 'aggregator', 'merchant_account_id': 'null'}
+    print(request.GET.dict())
+    return redirect("loja")
 
 
 def adicionar_endereco(request):
