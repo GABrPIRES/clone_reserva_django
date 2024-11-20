@@ -2,7 +2,13 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from .models import *
 import uuid
-from .utils import filtrar_produtos, preco_minino_maximo, ordenar_produtos
+from .utils import (
+    filtrar_produtos,
+    preco_minino_maximo,
+    ordenar_produtos,
+    enviar_email_compra,
+    exportar_csv,
+)
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
@@ -243,10 +249,30 @@ def finalizar_pedido(request, id_pedido):
 
 
 def finalizar_pagamento(request):
-    # TODO Aula 71 início da aula, abaixo estará o formato do response:
-    # {'collection_id': '91994701447', 'collection_status': 'approved', 'payment_id': '91994701447', 'status': 'approved', 'external_reference': 'null', 'payment_type': 'account_money', 'merchant_order_id': '24598634288', 'preference_id': '2073438676-318e7338-03a8-4ba7-9c09-4b375fa90f3c', 'site_id': 'MLB', 'processing_mode': 'aggregator', 'merchant_account_id': 'null'}
-    print(request.GET.dict())
-    return redirect("loja")
+    dados = request.GET.dict()
+    status = dados.get("status")
+    id_pagamento = dados.get("preference_id")
+    if status == "approved":
+        pagamento = Pagamento.objects.get(id_pagamento=id_pagamento)
+        pagamento.aprovado = True
+        pedido = pagamento.pedido
+        pedido.finalizado = True
+        pedido.data_finalizacao = datetime.now()
+        pedido.save()
+        pagamento.save()
+        enviar_email_compra(pedido)
+        if request.user.is_authenticated:
+            return redirect("meus_pedidos")
+        else:
+            return redirect("pedido_aprovado", pedido.id)
+    else:
+        return redirect("checkout")
+
+
+def pedido_aprovado(request, id_pedido):
+    pedido = Pedido.objects.get(id=id_pedido)
+    context = {"pedido": pedido}
+    return render(request, "pedido_aprovado.html", context)
 
 
 def adicionar_endereco(request):
@@ -405,3 +431,34 @@ def criar_conta(request):
 def fazer_logout(request):
     logout(request)
     return redirect("fazer_login")
+
+
+@login_required
+def gerenciar_loja(request):
+    if request.user.groups.filter(name="equipe").exists():
+        pedidos_finalizados = Pedido.objects.filter(finalizado=True)
+        qtde_pedidos = len(pedidos_finalizados)
+        faturamento = sum(pedido.preco_total for pedido in pedidos_finalizados)
+        qtde_produtos = sum(pedido.quantidade_total for pedido in pedidos_finalizados)
+        context = {
+            "qtde_pedidos": qtde_pedidos,
+            "qtde_produtos": qtde_produtos,
+            "faturamento": faturamento,
+        }
+        return render(request, "interno/gerenciar_loja.html", context=context)
+    else:
+        return redirect("loja")
+
+
+@login_required
+def exportar_relatorio(request, relatorio):
+    if request.user.groups.filter(name="equipe").exists():
+        if relatorio == "pedido":
+            informacoes = Pedido.objects.filter(finalizado=True)
+        elif relatorio == "cliente":
+            informacoes = Cliente.objects.all()
+        elif relatorio == "endereco":
+            informacoes = Endereco.objects.all()
+        return exportar_csv(informacoes)
+    else:
+        return redirect("gerenciar_loja")
