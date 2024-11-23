@@ -47,7 +47,7 @@ def loja(request, filtro=None):
     ids_categorias = produtos.values_list("categoria", flat=True).distinct()
     categorias = Categoria.objects.filter(id__in=ids_categorias)
     tamanhos = itens.values_list("tamanho", flat=True).distinct()
-    minimo, maximo = preco_minino_maximo(produtos)
+    minimo, maximo = preco_minino_maximo(produtos=Produto.objects.filter(ativo=True))
 
     ordem = request.GET.get("ordem", "menor-preco")
     produtos = ordenar_produtos(produtos, ordem)
@@ -237,7 +237,7 @@ def finalizar_pedido(request, id_pedido):
 
         if erro:
             enderecos = Endereco.objects.filter(cliente=pedido.cliente)
-            context = {"erro": erro, "pedido": pedido, "enderecos ": enderecos}
+            context = {"erro": erro, "pedido": pedido, "enderecos": enderecos}
             return render(request, "checkout.html", context)
         else:
             itens_pedido = ItensPedido.objects.filter(pedido=pedido)
